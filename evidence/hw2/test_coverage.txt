@@ -1,0 +1,21 @@
+Name                                      Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------
+app/__init__.py                              16      0   100%
+app/forms.py                                 33      2    94%   35, 40
+app/helpers.py                               37      0   100%
+app/models.py                               120      0   100%
+app/routes.py                               133     36    73%   29, 78, 120, 171-175, 188-195, 200-207, 212-219, 224-231
+config.py                                    10      0   100%
+test.settings                                 2      0   100%
+tests/conftest.py                            53      0   100%
+tests/functional/conftest.py                 34      0   100%
+tests/functional/test_anonymous.py           39      0   100%
+tests/functional/test_live_server.py         20      4    80%   24-27
+tests/functional/test_logged_in_user.py      33      0   100%
+tests/unit/conftest.py                       18      0   100%
+tests/unit/test_helpers.py                   31      0   100%
+tests/unit/test_models.py                   111      0   100%
+tests/unit/test_routes.py                   155      0   100%
+wolfit.py                                     0      0   100%
+-----------------------------------------------------------------------
+TOTAL                                       845     42    95%

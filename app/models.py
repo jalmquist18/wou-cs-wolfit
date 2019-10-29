@@ -9,6 +9,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app import db, login
 from app.helpers import pretty_date
 
+import requests
+import json
+
 user_vote = db.Table(
     "user_vote",
     db.Column("user.id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
@@ -171,24 +174,19 @@ class Comment(db.Model):
         db.session.commit()
 
 
-class ActivityLog(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    details = db.Column(db.Text)
-
+class ActivityLog():
     def __repr__(self):
         return f"<ActivityLog id {self.id} - {self.details[:20]}>" #pragma: no cover
-
+    
     @classmethod
-    def latest_entry(cls):
-        return cls.query.order_by(ActivityLog.id.desc()).first()
-
-    @classmethod
-    def log_event(cls, user_id, details):
-        e = cls(user_id=user_id, details=details)
-        db.session.add(e)
-        db.session.commit()
+    def log_event(cls, User, details):
+        entry = {
+                'user_id': User.id,
+                'username': User.username,
+                'details': details,
+                'timestamp': str(datetime.utcnow())
+            }
+        requests.post('http://localhost:5001/api/activities/', json=json.dumps(entry))
 
 
 @login.user_loader

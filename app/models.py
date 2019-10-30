@@ -175,9 +175,6 @@ class Comment(db.Model):
 
 
 class ActivityLog():
-    def __repr__(self):
-        return f"<ActivityLog id {self.id} - {self.details[:20]}>" #pragma: no cover
-    
     @classmethod
     def log_event(cls, User, details):
         entry = {

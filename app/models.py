@@ -11,6 +11,7 @@ from app.helpers import pretty_date
 
 import requests
 import json
+import os
 
 user_vote = db.Table(
     "user_vote",
@@ -183,7 +184,8 @@ class ActivityLog():
                 'details': details,
                 'timestamp': str(datetime.utcnow())
             }
-        requests.post('http://localhost:8080/api/activities/', json=json.dumps(entry))
+        host = os.getenv('ACTIVITY_LOGGER', 'localhost:8080')
+        requests.post('http://' + host + '/api/activities/', json=json.dumps(entry))
 
 
 @login.user_loader

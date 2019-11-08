@@ -183,7 +183,7 @@ class ActivityLog():
                 'details': details,
                 'timestamp': str(datetime.utcnow())
             }
-        requests.post('http://localhost:5001/api/activities/', json=json.dumps(entry))
+        requests.post('http://localhost:8080/api/activities/', json=json.dumps(entry))
 
 
 @login.user_loader

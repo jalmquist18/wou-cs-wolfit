@@ -1,17 +1,17 @@
+from celery import Celery
 from datetime import datetime
-
 from flask_login import UserMixin
-
 import markdown
-
 from werkzeug.security import check_password_hash, generate_password_hash
-
 from app import db, login
 from app.helpers import pretty_date
-
 import requests
 import json
 import os
+
+
+celery = Celery('logger', broker='redis://localhost') 
+
 
 user_vote = db.Table(
     "user_vote",
@@ -175,7 +175,12 @@ class Comment(db.Model):
         db.session.commit()
 
 
-class ActivityLog():
+class ActivityLog(): 
+    @celery.task
+    def post_activity(activity):
+        host = os.getenv('ACTIVITY_LOGGER', 'localhost:8080')
+        requests.post('http://' + host + '/api/activities/', json=json.dumps(activity))
+
     @classmethod
     def log_event(cls, User, details):
         entry = {
@@ -184,8 +189,7 @@ class ActivityLog():
                 'details': details,
                 'timestamp': str(datetime.utcnow())
             }
-        host = os.getenv('ACTIVITY_LOGGER', 'localhost:8080')
-        requests.post('http://' + host + '/api/activities/', json=json.dumps(entry))
+        ActivityLog.post_activity.delay(entry)
 
 
 @login.user_loader
